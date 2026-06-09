@@ -173,7 +173,6 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 
 **RNF12 –** O projeto deve possuir documentação técnica (este README).
 
-
 ---
 
 ## 🛠️ Tecnologias
