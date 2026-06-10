@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using ScheduleClin.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Schedule_V1.Models;
 
-namespace ScheduleClin.Controllers
+namespace Schedule_V1.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,4 +1,4 @@
-namespace ScheduleClin.Models
+namespace Schedule_V1.Models
 {
     public class ErrorViewModel
     {
