@@ -228,22 +228,55 @@ public IActionResult Index()
 ## 📁 Estrutura de Pastas
 
 ```
-Projeto/
+ScheduleClin/                                                          ← Raiz do repositório
 │
-├── Controllers/
-│   └── ProdutoController.cs       # Lógica de negócio e tratamento das requisições
+├── .gitignore                                                        ← Arquivos ignorados pelo Git (.vs, bin, obj, etc.)
+├── README.md                                                   ← Documentação do projeto (requisitos, arquitetura C4)
+├── ScheduleClin_V1.slnx                                      ← Arquivo de solução do Visual Studio
 │
-├── Models/
-│   └── Produto.cs                 # Entidades do domínio e acesso a dados
+├── .vs/                                                                  ← Cache interno do Visual Studio (ignorado pelo Git)
 │
-├── Views/
-│   └── Produto/
-│       ├── Index.cshtml           # Listagem de registros
-│       └── Details.cshtml        # Detalhes de um registro
-│
-├── wwwroot/                       # Arquivos estáticos (CSS, JS, imagens)
-│
-└── Program.cs                     # Ponto de entrada — configuração da aplicação
+└── ScheduleClin_V1/                                            ← Projeto ASP.NET Core MVC (.NET 8)
+    │
+    ├── ScheduleClin.csproj                                    ← Definição do projeto (dependências, target framework)
+    ├── Program.cs                                                 ← Ponto de entrada — configuração da aplicação e pipeline HTTP
+    ├── appsettings.json                                         ← Configurações gerais (connection strings, logging)
+    ├── appsettings.Development.json                  ← Configurações do ambiente de desenvolvimento (não versionado)
+    │
+    ├── Properties/
+    │   └── launchSettings.json                                ← Perfis de execução local (portas, ambiente)
+    │
+    ├── Controllers/                                                 ← 🟢 Camada de controle (recebe requisições HTTP)
+    │   └── HomeController.cs                                 ← Controller padrão (Index, Privacy, Error)
+    │
+    ├── Models/                                                       ← 🟡 Camada de modelo (entidades do domínio)
+    │   └── ErrorViewModel.cs                                 ← Modelo da página de erro
+    │
+    ├── Views/                                                          ← 🟣 Camada de visualização (templates Razor)
+    │   ├── _ViewImports.cshtml                              ← Imports e Tag Helpers globais das views
+    │   ├── _ViewStart.cshtml                                   ← Define o layout padrão de todas as views
+    │   │
+    │   ├── Home/
+    │   │   ├── Index.cshtml                                      ← Página inicial
+    │   │   └── Privacy.cshtml                                   ← Página de privacidade
+    │   │
+    │   └── Shared/                                                   ← Views compartilhadas
+    │       ├── _Layout.cshtml                                    ← Layout principal (header, nav, footer)
+    │       ├── _Layout.cshtml.css                               ← CSS isolado do layout
+    │       ├── _ValidationScriptsPartial.cshtml           ← Scripts de validação client-side
+    │       └── Error.cshtml                                         ← Página de erro genérica
+    │
+    └── wwwroot/                                                     ← 🌐 Arquivos estáticos (servidos diretamente)
+        ├── favicon.ico
+        ├── css/
+        │   └── site.css                                                 ← Estilos customizados do site
+        ├── js/
+        │   └── site.js                                                    ← Scripts customizados do site
+        └── lib/                                                             ← Bibliotecas client-side de terceiros
+            ├── bootstrap/                                             ← Bootstrap 5 (CSS + JS, incl. variantes RTL)
+            ├── jquery/                                                   ← jQuery
+            ├── jquery-validation/                                  ← Validação de formulários
+            └── jquery-validation-unobtrusive/              ← Integração da validação com ASP.NET
 ```
 
 ### 📌 O que cada camada faz?
