@@ -84,6 +84,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthorization();
 
+// Auditoria: registra DbAuditLogger que persiste em tabela Audits
+builder.Services.AddScoped<ScheduleClin.Services.Audit.IAuditLogger, ScheduleClin.Services.Audit.DbAuditLogger>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -98,6 +101,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();  // <- precisa vir ANTES de UseAuthorization
+// Middleware de auditoria: registra ações HTTP e usuário (escreve em Logs/audit.log)
+app.UseMiddleware<ScheduleClin.Middleware.AuditLoggingMiddleware>();
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())

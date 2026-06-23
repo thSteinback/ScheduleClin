@@ -201,6 +201,41 @@ namespace ScheduleClin.Migrations
                     b.ToTable("Profiles");
                 });
 
+            modelBuilder.Entity("ScheduleClin.Models.Audit.Audit", b =>
+                {
+                    b.Property<Guid>("AuditId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Method")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AuditId");
+
+                    b.ToTable("Audits");
+                });
+
             modelBuilder.Entity("ScheduleClin.Models.User", b =>
                 {
                     b.Property<Guid>("Id")

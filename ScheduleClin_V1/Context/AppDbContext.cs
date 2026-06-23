@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
     public DbSet<Calendar> Calendars { get; set; }
     public DbSet<Profile> Profiles { get; set; }
+    public DbSet<ScheduleClin.Models.Audit.Audit> Audits { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
