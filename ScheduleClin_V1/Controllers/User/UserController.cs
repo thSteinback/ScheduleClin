@@ -22,7 +22,7 @@ public class UserController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpGet]
+    [HttpGet("/get-users")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
         var users = await _context.Users
