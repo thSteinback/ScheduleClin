@@ -13,10 +13,7 @@ public class User : IdentityUser<Guid>
     [PersonalData]                 // marca dado pessoal (LGPD) p/ ferramentas do Identity
     [StringLength(14)]
     public string? CPF { get; set; }
-
-    // Dados profissionais (ex.: CRP do psicólogo). Opcional: nem todo perfil tem.
     public Guid? PerfilId { get; set; }
-    public Profile? Perfil { get; set; }
 
     public DateTime DataNascimento { get; set; }
     public DateTimeOffset CreateAt { get; set; } = DateTime.UtcNow;
