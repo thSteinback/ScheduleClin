@@ -225,6 +225,10 @@
                asp-controller="Psicologo" asp-action="Consultas">
                 <i class="ti ti-clipboard-list"></i> Minhas Consultas
             </a>
+            <a class="adm-nav-link @(ViewData["ActiveMenu"]?.ToString()=="historico"?"active":"")"
+               asp-controller="Psicologo" asp-action="Historico">
+                <i class="ti ti-history"></i> Histórico
+            </a>
         </nav>
 
         <div class="adm-sidebar-footer">

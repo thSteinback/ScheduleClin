@@ -15,4 +15,7 @@ public class PsicologoController : Controller
 
     // GET /Psicologo/Consultas
     public IActionResult Consultas() => View("Queries");
+
+    // GET /Psicologo/Historico
+    public IActionResult Historico() => View();
 }

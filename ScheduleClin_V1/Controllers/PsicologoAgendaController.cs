@@ -69,6 +69,46 @@ public class PsicologoAgendaController : ControllerBase
         return Ok(dtos);
     }
 
+    [HttpGet("historico")]
+    public async Task<ActionResult<IEnumerable<CalendarDto>>> GetHistorico()
+    {
+        var psicologoId = Guid.Parse(_userManager.GetUserId(User)!);
+        var agora = DateTime.Now;
+
+        var consultas = await _context.Calendars
+            .Where(c => c.PsicologoId == psicologoId)
+            .Where(c => c.PacienteId.HasValue)
+            .Where(c => c.ScheduleDate <= agora || c.Status == AppointmentStatus.Finalizado)
+            .OrderByDescending(c => c.ScheduleDate)
+            .ToListAsync();
+
+        var pacienteIds = consultas
+            .Select(c => c.PacienteId!.Value)
+            .Distinct()
+            .ToList();
+
+        var pacientes = await _context.Users
+            .Where(u => pacienteIds.Contains(u.Id))
+            .ToDictionaryAsync(u => u.Id, u => u.UserName);
+
+        var nomePsicologo = (await _userManager.GetUserAsync(User))?.UserName;
+
+        var dtos = consultas.Select(c => new CalendarDto
+        {
+            CalendarId      = c.CalendarID,
+            Title           = c.Title,
+            ScheduleDate    = c.ScheduleDate,
+            DurationMinutes = c.DurationMinutes,
+            Status          = c.Status,
+            PacienteId      = c.PacienteId,
+            PacienteNome    = pacientes.GetValueOrDefault(c.PacienteId!.Value),
+            PsicologoId     = c.PsicologoId,
+            PsicologoNome   = nomePsicologo,
+        });
+
+        return Ok(dtos);
+    }
+
     [HttpGet("pacientes")]
     public async Task<ActionResult> GetPacientes()
     {
@@ -96,6 +136,7 @@ public class PsicologoAgendaController : ControllerBase
             c.PsicologoId == psicologoId &&
             c.ScheduleDate == scheduleDate &&
             c.Status != AppointmentStatus.Cancelada &&
+            c.Status != AppointmentStatus.Finalizado &&
             c.CalendarID != ignorarId);
     }
 
@@ -155,6 +196,9 @@ public class PsicologoAgendaController : ControllerBase
         if (calendar.Status == AppointmentStatus.Cancelada)
             return BadRequest(new { message = "Não é possível editar uma consulta cancelada." });
 
+        if (calendar.Status == AppointmentStatus.Finalizado)
+            return BadRequest(new { message = "Não é possível editar uma consulta finalizada." });
+
         var novaData = dto.ScheduleDate ?? calendar.ScheduleDate;
 
         if (novaData.Date < DateTime.Today)
@@ -176,6 +220,9 @@ public class PsicologoAgendaController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(dto.Status))
         {
+            if (dto.Status == AppointmentStatus.Finalizado)
+                return BadRequest(new { message = "Use a ação de finalizar consulta." });
+
             if (!AppointmentStatus.Todos.Contains(dto.Status))
                 return BadRequest(new { message = "Status inválido." });
             calendar.Status = dto.Status;
@@ -198,6 +245,27 @@ public class PsicologoAgendaController : ControllerBase
             return BadRequest(new { message = "Esta consulta já está cancelada." });
 
         calendar.Status = AppointmentStatus.Cancelada;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { id = calendar.CalendarID, status = calendar.Status });
+    }
+
+    [HttpPatch("{id:guid}/finalizar")]
+    public async Task<IActionResult> Finalizar(Guid id)
+    {
+        var psicologoId = Guid.Parse(_userManager.GetUserId(User)!);
+        var calendar = await GetConsultaDoPsicologo(id, psicologoId);
+
+        if (calendar is null)
+            return NotFound(new { message = "Consulta não encontrada." });
+
+        if (calendar.Status == AppointmentStatus.Cancelada)
+            return BadRequest(new { message = "Não é possível finalizar uma consulta cancelada." });
+
+        if (calendar.Status == AppointmentStatus.Finalizado)
+            return BadRequest(new { message = "Esta consulta já está finalizada." });
+
+        calendar.Status = AppointmentStatus.Finalizado;
         await _context.SaveChangesAsync();
 
         return Ok(new { id = calendar.CalendarID, status = calendar.Status });

@@ -1,25 +1,22 @@
 @{
     Layout = "~/Views/Shared/_PsicologoLayout.cshtml";
-    ViewData["Title"]      = "Minhas Consultas";
-    ViewData["ActiveMenu"] = "consultas";
+    ViewData["Title"]      = "Histórico";
+    ViewData["ActiveMenu"] = "historico";
 }
 
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">
     <div>
-        <div class="adm-page-title">Minhas Consultas</div>
-        <div class="adm-page-sub" id="qc-sub">Carregando...</div>
+        <div class="adm-page-title">Histórico de Consultas</div>
+        <div class="adm-page-sub" id="hist-sub">Consultas realizadas ou passadas até agora, e finalizadas</div>
     </div>
-    <button class="adm-btn adm-btn-primary" onclick="abrirModalNovaConsulta()">
-        <i class="ti ti-plus"></i> Nova consulta
-    </button>
 </div>
 
 <div class="adm-search-wrap">
     <div class="adm-search">
         <i class="ti ti-search"></i>
-        <input type="text" id="qc-busca" placeholder="Buscar paciente..." oninput="filtrarConsultas()" />
+        <input type="text" id="hist-busca" placeholder="Buscar paciente..." oninput="filtrarHistorico()" />
     </div>
-    <select class="adm-input" style="width:200px" id="qc-status" onchange="filtrarConsultas()">
+    <select class="adm-input" style="width:200px" id="hist-status" onchange="filtrarHistorico()">
         <option value="">Todos os status</option>
         <option>Pendente</option>
         <option>Confirmada</option>
@@ -39,7 +36,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody id="qc-tbody">
+        <tbody id="hist-tbody">
             <tr><td colspan="4" style="text-align:center;padding:32px;color:#9ca3af">Carregando...</td></tr>
         </tbody>
     </table>
@@ -51,38 +48,43 @@
 <script>
     const initials = n => (n||'??').split(/\s+/).slice(0,2).map(p=>p[0]).join('').toUpperCase();
 
-    let todasConsultas = [];
+    let historicoConsultas = [];
 
-    async function carregarConsultas() {
+    async function carregarHistorico() {
         try {
-            const res = await fetch('/api/PsicologoAgenda', { credentials: 'include' });
-            todasConsultas = res.ok ? await res.json() : [];
+            const res = await fetch('/api/PsicologoAgenda/historico', { credentials: 'include' });
+            historicoConsultas = res.ok ? await res.json() : [];
         } catch {
-            todasConsultas = [];
+            historicoConsultas = [];
         }
-        filtrarConsultas();
+        filtrarHistorico();
     }
 
-    function filtrarConsultas() {
-        const busca  = document.getElementById('qc-busca').value.toLowerCase();
-        const status = document.getElementById('qc-status').value;
+    function filtrarHistorico() {
+        const busca  = document.getElementById('hist-busca').value.toLowerCase();
+        const status = document.getElementById('hist-status').value;
 
-        const filtradas = todasConsultas
-            .filter(c => c.pacienteId)
+        const filtradas = historicoConsultas
             .filter(c => !busca || (c.pacienteNome || '').toLowerCase().includes(busca))
-            .filter(c => !status || c.status === status)
-            .sort((a, b) => new Date(b.scheduleDate) - new Date(a.scheduleDate));
+            .filter(c => !status || c.status === status);
 
-        renderizarConsultas(filtradas);
+        renderizarHistorico(filtradas);
     }
 
-    function renderizarConsultas(lista) {
-        const confirmadas = lista.filter(c => c.status === 'Confirmada').length;
-        document.getElementById('qc-sub').textContent = `${confirmadas} consulta${confirmadas !== 1 ? 's' : ''} confirmada${confirmadas !== 1 ? 's' : ''}`;
+    function renderizarHistorico(lista) {
+        const canceladas = lista.filter(c => c.status === 'Cancelada').length;
+        const finalizadas = lista.filter(c => c.status === 'Finalizado').length;
+        const reagendadas = lista.filter(c => c.status === 'Reagendamento Solicitado').length;
+
+        document.getElementById('hist-sub').textContent =
+            `${lista.length} consulta${lista.length !== 1 ? 's' : ''} no histórico` +
+            (finalizadas ? ` · ${finalizadas} finalizada${finalizadas !== 1 ? 's' : ''}` : '') +
+            (canceladas ? ` · ${canceladas} cancelada${canceladas !== 1 ? 's' : ''}` : '') +
+            (reagendadas ? ` · ${reagendadas} reagendamento${reagendadas !== 1 ? 's' : ''}` : '');
 
         if (!lista.length) {
-            document.getElementById('qc-tbody').innerHTML =
-                `<tr><td colspan="4" style="text-align:center;padding:32px;color:#9ca3af">Nenhuma consulta encontrada.</td></tr>`;
+            document.getElementById('hist-tbody').innerHTML =
+                `<tr><td colspan="4" style="text-align:center;padding:32px;color:#9ca3af">Nenhuma consulta no histórico.</td></tr>`;
             return;
         }
 
@@ -103,20 +105,18 @@
                 <td>${dataHora}</td>
                 <td><span class="adm-badge ${STATUS_BADGE[c.status] || 'adm-badge-gray'}">${c.status}</span></td>
                 <td style="text-align:right">
-                    <button class="adm-icon-btn" onclick='abrirDetalhesConsulta(${JSON.stringify(c).replace(/'/g, "&apos;")})'>
+                    <button class="adm-icon-btn" onclick='abrirDetalhesConsulta(${JSON.stringify(c).replace(/'/g, "&apos;")}, true)'>
                         <i class="ti ti-dots"></i>
                     </button>
                 </td>
             </tr>`;
         });
 
-        document.getElementById('qc-tbody').innerHTML = rows.join('');
+        document.getElementById('hist-tbody').innerHTML = rows.join('');
     }
 
-    window.onConsultaAtualizada = carregarConsultas;
-
     (async () => {
-        await carregarConsultas();
+        await carregarHistorico();
     })();
 </script>
 }

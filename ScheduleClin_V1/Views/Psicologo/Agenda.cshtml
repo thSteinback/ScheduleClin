@@ -38,6 +38,7 @@
     }
     .cal-chip.cal-chip-block { border-left-color:#9ca3af; background:#f3f4f6; color:#6b7280; }
     .cal-chip.cal-chip-cancel { border-left-color:#ef4444; background:#fef2f2; color:#b91c1c; text-decoration:line-through; }
+    .cal-chip.cal-chip-final { border-left-color:#0f766e; background:#ecfdf5; color:#0f766e; }
     .cal-chip:hover { filter:brightness(.97); }
 </style>
 
@@ -155,9 +156,10 @@
                 const altura = Math.max((c.durationMinutes / 60) * ALTURA_HORA, 22);
                 const isBloqueio = !c.pacienteId;
                 const isCancelada = c.status === 'Cancelada';
+                const isFinalizada = c.status === 'Finalizado';
                 const nome = c.pacienteNome || c.title;
 
-                const cls = isCancelada ? 'cal-chip-cancel' : (isBloqueio ? 'cal-chip-block' : '');
+                const cls = isCancelada ? 'cal-chip-cancel' : (isFinalizada ? 'cal-chip-final' : (isBloqueio ? 'cal-chip-block' : ''));
 
                 chips += `<div class="cal-chip ${cls}"
                     style="top:${top}px;height:${altura}px"
@@ -185,7 +187,7 @@
         }
 
         const ativas = consultasSemana.filter(c =>
-            ehHojeOuDepois(c.scheduleDate) && c.status !== 'Cancelada' && c.pacienteId
+            ehHojeOuDepois(c.scheduleDate) && c.status !== 'Cancelada' && c.status !== 'Finalizado' && c.pacienteId
         ).length;
         document.getElementById('cal-sub').textContent =
             `${ativas} consulta${ativas !== 1 ? 's' : ''} agendada${ativas !== 1 ? 's' : ''} a partir de hoje`;
