@@ -15,6 +15,9 @@ public class HomeController : Controller
         if (User.IsInRole(Perfis.Psicologo))
             return RedirectToAction("Agenda", "Psicologo");
 
+        if (User.IsInRole(Perfis.Paciente))
+            return RedirectToAction("Consultas", "Paciente");
+
         return View();
     }
 }

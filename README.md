@@ -39,11 +39,6 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 - Visualiza, altera e cancela qualquer consulta
 - Configura parâmetros gerais do sistema
 
-### 🗂️ Secretária
-- Cadastra novos pacientes e cria credenciais de acesso
-- Realiza agendamento, reagendamento e cancelamento de consultas
-- Visualiza a agenda geral da clínica
-
 ### 🧠 Psicólogo
 - Visualiza sua própria agenda de consultas
 - Pode cancelar ou solicitar reagendamento de consultas
@@ -60,8 +55,8 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 
 ### 🔐 Autenticação e Acesso
 - Login com e-mail e senha
-- Troca obrigatória de senha no primeiro acesso (senha provisória definida pela secretária)
-- Controle de acesso baseado em perfil (Admin, Secretária, Psicólogo, Paciente)
+- Troca obrigatória de senha no primeiro acesso (senha provisória definida pelo Administrador)
+- Controle de acesso baseado em perfil (Admin, Psicólogo, Paciente)
 - Cadastro de paciente pela secretária ou diretamente pelo próprio paciente
 
 ### 👤 Gerenciamento de Usuários
@@ -69,10 +64,10 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 - Edição e inativação de usuários pelo administrador
 
 ### 📅 Agendamento
-- Criação de consultas pela secretária, psicólogo ou paciente
+- Criação de consultas pelo administrador, psicólogo.
 - Vinculação da consulta ao paciente e ao psicólogo
 - Reagendamento e cancelamento de consultas
-- Visualização da agenda geral pela secretária
+- Visualização da agenda geral pelo administrador
 
 ### 📋 Histórico
 - Listagem de consultas por paciente
@@ -82,7 +77,6 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 ### 🖥️ Painel por Perfil
 - Paciente visualiza apenas suas próprias consultas
 - Psicólogo visualiza apenas sua própria agenda
-- Secretária visualiza toda a agenda da clínica
 - Administrador acessa todas as informações do sistema
 
 ---
@@ -103,7 +97,7 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 
 ### 👤 2. Gerenciamento de Usuários
 
-**RF05 –** O sistema deve permitir que a secretária cadastre novos pacientes com senha provisória padrão.
+**RF05 –** O sistema deve permitir que o administrador cadastre novos pacientes com senha provisória padrão.
 
 **RF06 –** O sistema deve permitir que o paciente realize seu próprio cadastro diretamente no sistema.
 
@@ -119,7 +113,7 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 
 **RF10 –** O sistema deve permitir reagendamento e cancelamento de consultas.
 
-**RF11 –** O sistema deve exibir a agenda geral da clínica para a secretária.
+**RF11 –** O sistema deve exibir a agenda geral da clínica para o administrador.
 
 ---
 
@@ -335,7 +329,7 @@ psicologo
 
 ## 📌 Status do Projeto
 
-🚧 **Em desenvolvimento**
+**Finalizado**
 
 ---
 
