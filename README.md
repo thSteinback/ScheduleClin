@@ -57,7 +57,7 @@ Aplicando boas práticas de **segurança da informação**, controle de acesso p
 - Login com e-mail e senha
 - Troca obrigatória de senha no primeiro acesso (senha provisória definida pelo Administrador)
 - Controle de acesso baseado em perfil (Admin, Psicólogo, Paciente)
-- Cadastro de paciente pela secretária ou diretamente pelo próprio paciente
+- Cadastro de paciente  diretamente pelo próprio paciente
 
 ### 👤 Gerenciamento de Usuários
 - Cadastro de pacientes pela secretária com senha padrão provisória
