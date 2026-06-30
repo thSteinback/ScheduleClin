@@ -145,6 +145,9 @@ public class AccountController : Controller
         if (await _userManager.IsInRoleAsync(user, Perfis.Psicologo))
             return RedirectToAction("Agenda", "Psicologo");
 
+        if (await _userManager.IsInRoleAsync(user, Perfis.Paciente))
+            return RedirectToAction("Consultas", "Paciente");
+
         return RedirectToAction("Index", "Home");
     }
 
